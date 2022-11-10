@@ -56,12 +56,15 @@ func run() {
 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
 		Unshareflags: syscall.CLONE_NEWNS,
 	}
-	cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func child() {
 	fmt.Printf("running %v %d\n", os.Args[2:], os.Getpid())
-	syscall.SetHostname([]byte("Container"))
+	// syscall.SetHostname([]byte("Container"))
 	syscall.Chroot("path/to/another/or copy of/a linux/filesys")
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
