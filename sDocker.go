@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -69,7 +70,14 @@ func run() {
 func child() {
 	fmt.Printf("running %v %d\n", os.Args[2:], os.Getpid())
 	// syscall.SetHostname([]byte("Container"))
-	syscall.Chroot("path/to/another/or copy of/a linux/filesys")
+	r, err := os.Open("./images/ubuntu.tar.gz")
+	if err != nil {
+		panic(err)
+	}
+	ExtractTarGz(r)
+	containerID := generateUID(5)
+	os.Rename("./images/ubuntu", "./containers/"+containerID+"/ubuntu")
+	syscall.Chroot("./images/ubuntu")
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
@@ -78,6 +86,16 @@ func child() {
 	cmd.Stderr = os.Stdin
 	cmd.Run()
 	syscall.Unmount("/proc", 0)
+}
+func generateUID(n int) string {
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
+
 }
 
 func ExtractTarGz(gzipStream io.Reader) {
