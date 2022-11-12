@@ -56,14 +56,13 @@ func BuildRun() {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stdin
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-		Unshareflags: syscall.CLONE_NEWNS,
-	}
+	// cmd.SysProcAttr = &syscall.SysProcAttr{
+	// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+	// 	Unshareflags: syscall.CLONE_NEWNS,
+	// }
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Print(err.Error())
 		panic(err)
 	}
 }
