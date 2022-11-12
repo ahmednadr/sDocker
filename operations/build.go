@@ -54,6 +54,7 @@ func BuildRun() {
 
 	cmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
 	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stdin
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
@@ -75,8 +76,13 @@ func BuildChild() {
 
 	cmd := exec.Command(os.Args[3], os.Args[4:]...)
 	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	cmd.Run()
+	err := cmd.Run()
+
+	if err != nil {
+		panic(err)
+	}
 
 	syscall.Unmount("/proc", 0)
 
