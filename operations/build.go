@@ -49,24 +49,6 @@ func extractTarForBuild(baseImage string, name string) {
 	}
 }
 
-// func BuildRun() {
-// 	fmt.Printf("running %v\n", "build")
-
-// 	cmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
-// 	cmd.Stdout = os.Stdout
-// 	cmd.Stdin = os.Stdin
-// 	cmd.Stderr = os.Stdin
-// 	cmd.SysProcAttr = &syscall.SysProcAttr{
-// 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-// 		Unshareflags: syscall.CLONE_NEWNS,
-// 	}
-// 	err := cmd.Run()
-
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
-
 func BuildChild() {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
 
@@ -79,6 +61,7 @@ func BuildChild() {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
+
 	syscall.Unmount("/proc", 0)
 
 	if err != nil {
