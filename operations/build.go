@@ -56,10 +56,10 @@ func BuildRun() {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stdin
-	// cmd.SysProcAttr = &syscall.SysProcAttr{
-	// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-	// 	Unshareflags: syscall.CLONE_NEWNS,
-	// }
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+		Unshareflags: syscall.CLONE_NEWNS,
+	}
 	err := cmd.Run()
 
 	if err != nil {
@@ -79,12 +79,11 @@ func BuildChild() {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
+	syscall.Unmount("/proc", 0)
 
 	if err != nil {
 		panic(err)
 	}
-
-	syscall.Unmount("/proc", 0)
 
 }
 
