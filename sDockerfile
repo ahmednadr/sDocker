@@ -1,4 +1,4 @@
 FROM ubuntu
-RUN echo "namespace 8.8.8.8" >> /etc/resolv.conf
+RUN echo namespace 8.8.8.8 >> /etc/resolv.conf
 RUN apt update
 RUN apt install cowsay
