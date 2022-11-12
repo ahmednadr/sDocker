@@ -42,6 +42,12 @@ func main() {
 		run()
 	case "init":
 		child()
+	case "build":
+		operations.Build(os.Args[2], os.Args[3])
+	case "buildrun":
+		operations.BuildRun()
+	case "buildinternal":
+		operations.BuildChild()
 	default:
 		panic("no such command")
 	}
@@ -70,7 +76,7 @@ func child() {
 	// syscall.SetHostname([]byte("Container"))
 
 	containerID := operations.GenerateUID(5)
-	operations.Extract("./images/ubuntu.tar.gz", containerID)
+	operations.ExtractImage("./images/ubuntu.tar.gz", containerID)
 
 	syscall.Chroot("./containers/" + containerID)
 	syscall.Chdir("/")
@@ -79,7 +85,7 @@ func child() {
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stdin
+	cmd.Stderr = os.Stderr
 	cmd.Run()
 
 	syscall.Unmount("/proc", 0)
