@@ -63,6 +63,7 @@ func BuildRun() {
 	err := cmd.Run()
 
 	if err != nil {
+		fmt.Print(err.Error())
 		panic(err)
 	}
 }
