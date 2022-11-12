@@ -42,7 +42,7 @@ func extractTarForBuild(baseImage string, name string) {
 		os.Mkdir("./images/tmp", 0755)
 	}
 	os.Mkdir("./images/tmp/"+name, 0755)
-	extract := exec.Command("tar", "-xvf", "./images/"+baseImage, "-C", "./images/tmp/"+name)
+	extract := exec.Command("tar", "-xvf", "./images/"+baseImage+".tar.gz", "-C", "./images/tmp/"+name)
 	err := extract.Run()
 	if err != nil {
 		panic(err)
