@@ -44,8 +44,8 @@ func main() {
 		child()
 	case "build":
 		operations.Build(os.Args[2], os.Args[3])
-	case "buildrun":
-		operations.BuildRun()
+	// case "buildrun":
+	// 	operations.BuildRun()
 	case "buildinternal":
 		operations.BuildChild()
 	default:

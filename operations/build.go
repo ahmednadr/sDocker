@@ -49,23 +49,23 @@ func extractTarForBuild(baseImage string, name string) {
 	}
 }
 
-func BuildRun() {
-	fmt.Printf("running %v\n", "build")
+// func BuildRun() {
+// 	fmt.Printf("running %v\n", "build")
 
-	cmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stdin
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-		Unshareflags: syscall.CLONE_NEWNS,
-	}
-	err := cmd.Run()
+// 	cmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
+// 	cmd.Stdout = os.Stdout
+// 	cmd.Stdin = os.Stdin
+// 	cmd.Stderr = os.Stdin
+// 	cmd.SysProcAttr = &syscall.SysProcAttr{
+// 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+// 		Unshareflags: syscall.CLONE_NEWNS,
+// 	}
+// 	err := cmd.Run()
 
-	if err != nil {
-		panic(err)
-	}
-}
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
 
 func BuildChild() {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
@@ -108,9 +108,13 @@ func Build(buildFilePath string, newImageName string) {
 			extractTarForBuild(cmd[1], newImageName)
 		case "RUN":
 			{
-				buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildrun"}, append([]string{newImageName}, cmd[1:]...)...)...)
+				buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, append([]string{newImageName}, cmd[1:]...)...)...)
 				buildRunCmd.Stdout = os.Stdout
 				buildRunCmd.Stderr = os.Stderr
+				// buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
+				// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+				// 	Unshareflags: syscall.CLONE_NEWNS,
+				// }
 				buildRunCmd.Run()
 			}
 		}
