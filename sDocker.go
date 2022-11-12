@@ -29,6 +29,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sDocker/operations"
 	"strconv"
 	"syscall"
 )
@@ -68,8 +69,8 @@ func child() {
 	fmt.Printf("running %v %d\n", os.Args[2:], os.Getpid())
 	// syscall.SetHostname([]byte("Container"))
 
-	containerID := generateUID(5)
-	extract("./images/ubuntu.tar.gz", containerID)
+	containerID := operations.GenerateUID(5)
+	operations.Extract("./images/ubuntu.tar.gz", containerID)
 
 	syscall.Chroot("./containers/" + containerID + "/ubuntu")
 	syscall.Chdir("/")
