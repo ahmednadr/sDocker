@@ -72,7 +72,7 @@ func child() {
 	containerID := operations.GenerateUID(5)
 	operations.Extract("./images/ubuntu.tar.gz", containerID)
 
-	syscall.Chroot("./containers/" + containerID + "/ubuntu")
+	syscall.Chroot("./containers/" + containerID)
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
 
