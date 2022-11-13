@@ -113,7 +113,7 @@ func Build(buildFilePath string, newImageName string) {
 			}
 			//TODO
 		case "RUN":
-			c <- "echo RUN"
+			c <- "apt update"
 		}
 	}
 }
