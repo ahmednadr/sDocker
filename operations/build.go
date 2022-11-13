@@ -73,7 +73,7 @@ func inContainerThread(c chan string) {
 
 	for bashCmd := range c {
 
-		cmd := exec.Command("bash", []string{"-C", bashCmd}...)
+		cmd := exec.Command("echo", []string{"C", bashCmd}...)
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
