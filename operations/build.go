@@ -77,7 +77,7 @@ func inContainerThread(c chan string) {
 
 		args := strings.Split(bashCmd, " ")
 
-		cmd := exec.Command(args[1], args[2:]...)
+		cmd := exec.Command(args[0], args[1:]...)
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
