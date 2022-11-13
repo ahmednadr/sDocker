@@ -75,15 +75,16 @@ func inContainerThread(c chan string) {
 
 		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
-		out, err := exec.Command("/bin/bash", "-c", bashCmd).Output()
+		args := strings.Split(bashCmd, " ")
 
-		// cmd.Stdout = os.Stdout
-		// cmd.Stdin = os.Stdin
-		// cmd.Stderr = os.Stderr
+		cmd := exec.Command(args[1], args[2:]...)
 
-		// err := cmd.Run()
+		cmd.Stdout = os.Stdout
+		cmd.Stdin = os.Stdin
+		cmd.Stderr = os.Stderr
 
-		fmt.Printf("running %v %d\n", out, os.Getpid())
+		err := cmd.Run()
+
 		if err != nil {
 			panic(err)
 		}
@@ -116,7 +117,7 @@ func Build(buildFilePath string, newImageName string) {
 			}
 			//TODO
 		case "RUN":
-			c <- "apt update"
+			c <- "echo RUN"
 		}
 	}
 }
