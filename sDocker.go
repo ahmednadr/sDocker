@@ -43,9 +43,9 @@ func main() {
 	case "init":
 		child()
 	case "build":
-		operations.Build(os.Args[2], os.Args[3])
+		operations.BuildNewNs()
 	case "buildinternal":
-		operations.BuildChild()
+		operations.Build(os.Args[2], os.Args[3])
 	default:
 		panic("no such command")
 	}

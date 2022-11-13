@@ -49,25 +49,42 @@ func extractTarForBuild(baseImage string, name string) {
 	}
 }
 
-func BuildChild() {
+func BuildNewNs() {
+	buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
+	buildRunCmd.Stdout = os.Stdout
+	buildRunCmd.Stderr = os.Stderr
+	buildRunCmd.Stdin = os.Stdin
+
+	buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+		Unshareflags: syscall.CLONE_NEWNS,
+	}
+
+	buildRunCmd.Run()
+}
+
+func inContainerThread(c chan string) {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
 
 	syscall.Chroot("./images/tmp/" + os.Args[2])
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
+	defer syscall.Unmount("/proc", 0)
 
-	cmd := exec.Command(os.Args[3], os.Args[4:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
+	for bashCmd := range c {
 
-	syscall.Unmount("/proc", 0)
+		cmd := exec.Command("bash", []string{"-C", bashCmd}...)
 
-	if err != nil {
-		panic(err)
+		cmd.Stdout = os.Stdout
+		cmd.Stdin = os.Stdin
+		cmd.Stderr = os.Stderr
+
+		err := cmd.Run()
+
+		if err != nil {
+			panic(err)
+		}
 	}
-
 }
 
 func Build(buildFilePath string, newImageName string) {
@@ -85,22 +102,18 @@ func Build(buildFilePath string, newImageName string) {
 		parsedFile = append(parsedFile, args)
 	}
 
+	c := make(chan string, 1)
+
 	for _, cmd := range parsedFile {
 		switch cmd[0] {
 		case "FROM":
-			extractTarForBuild(cmd[1], newImageName)
-		case "RUN":
 			{
-				buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, append([]string{newImageName}, cmd[1:]...)...)...)
-				buildRunCmd.Stdout = os.Stdout
-				buildRunCmd.Stderr = os.Stderr
-				buildRunCmd.Stdin = os.Stdin
-				// buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
-				// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-				// 	Unshareflags: syscall.CLONE_NEWNS,
-				// }
-				buildRunCmd.Run()
+				extractTarForBuild(cmd[1], newImageName)
+				go inContainerThread(c)
 			}
+			//TODO
+		case "RUN":
+			c <- "echo RUN"
 		}
 	}
 }
