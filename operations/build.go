@@ -94,6 +94,7 @@ func Build(buildFilePath string, newImageName string) {
 				buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, append([]string{newImageName}, cmd[1:]...)...)...)
 				buildRunCmd.Stdout = os.Stdout
 				buildRunCmd.Stderr = os.Stderr
+				buildRunCmd.Stdin = os.Stdin
 				// buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
 				// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
 				// 	Unshareflags: syscall.CLONE_NEWNS,
