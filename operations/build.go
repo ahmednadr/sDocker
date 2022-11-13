@@ -74,7 +74,7 @@ func inContainerThread(c chan string) {
 	for bashCmd := range c {
 		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
-		cmd := exec.Command("/bin/bash", []string{"-C", bashCmd}...)
+		cmd := exec.Command("/bin/bash", "-c", bashCmd)
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
