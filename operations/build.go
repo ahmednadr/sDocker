@@ -72,6 +72,7 @@ func inContainerThread(c chan string) {
 	defer syscall.Unmount("/proc", 0)
 
 	for bashCmd := range c {
+		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
 		cmd := exec.Command("/bin/bash", []string{"-C", bashCmd}...)
 
