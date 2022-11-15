@@ -102,6 +102,8 @@ func Build(buildFilePath string, newImageName string) {
 	for lines.Scan() {
 		line := lines.Text()
 		trimedline := strings.TrimSpace(line)
+		// TODO: reduce time complxicity by picking the first word
+		// rather than splitting
 		args := strings.Split(trimedline, " ")
 		parsedFile = append(parsedFile, args)
 	}
@@ -115,9 +117,8 @@ func Build(buildFilePath string, newImageName string) {
 				extractTarForBuild(cmd[1], newImageName)
 				go inContainerThread(c)
 			}
-			//TODO
 		case "RUN":
-			c <- "echo RUN"
+			c <- strings.Join(cmd[1:], " ")
 		}
 	}
 }

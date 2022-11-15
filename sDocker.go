@@ -79,6 +79,7 @@ func child() {
 	syscall.Chroot("./containers/" + containerID)
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
+	defer syscall.Unmount("/proc", 0)
 
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdout = os.Stdout
@@ -86,7 +87,6 @@ func child() {
 	cmd.Stderr = os.Stderr
 	cmd.Run()
 
-	syscall.Unmount("/proc", 0)
 }
 
 func Cg() {
