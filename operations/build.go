@@ -55,10 +55,10 @@ func BuildNewNs() {
 	buildRunCmd.Stderr = os.Stderr
 	buildRunCmd.Stdin = os.Stdin
 
-	buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
-		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-		Unshareflags: syscall.CLONE_NEWNS,
-	}
+	// buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
+	// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+	// 	Unshareflags: syscall.CLONE_NEWNS,
+	// }
 
 	buildRunCmd.Run()
 }
