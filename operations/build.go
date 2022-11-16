@@ -51,9 +51,9 @@ func extractTarForBuild(baseImage string, name string) {
 
 func BuildNewNs() {
 	buildRunCmd := exec.Command("/proc/self/exe", append([]string{"buildinternal"}, os.Args[2:]...)...)
-	buildRunCmd.Stdout = os.Stdout
-	buildRunCmd.Stderr = os.Stderr
-	buildRunCmd.Stdin = os.Stdin
+	// buildRunCmd.Stdout = os.Stdout
+	// buildRunCmd.Stderr = os.Stderr
+	// buildRunCmd.Stdin = os.Stdin
 
 	buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
