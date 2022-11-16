@@ -63,7 +63,7 @@ func BuildNewNs() {
 	buildRunCmd.Run()
 }
 
-func inContainerThread(c chan string) {
+func inContainerThread(c chan []string) {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
 
 	syscall.Chroot("./images/tmp/" + os.Args[2])
@@ -73,15 +73,15 @@ func inContainerThread(c chan string) {
 
 	for bashCmd := range c {
 
-		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
+		fmt.Printf("running %v %d\n", bashCmd[0], os.Getpid())
 
-		args := strings.Split(bashCmd, " ")
-
-		cmd := exec.Command(args[0], args[1:]...)
+		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
 		cmd.Stderr = os.Stderr
+
+		fmt.Print(cmd.Err)
 
 		err := cmd.Run()
 
@@ -108,7 +108,7 @@ func Build(buildFilePath string, newImageName string) {
 		parsedFile = append(parsedFile, args)
 	}
 
-	c := make(chan string, 1)
+	c := make(chan []string, 1)
 
 	for _, cmd := range parsedFile {
 		switch cmd[0] {
@@ -118,7 +118,7 @@ func Build(buildFilePath string, newImageName string) {
 				go inContainerThread(c)
 			}
 		case "RUN":
-			c <- strings.Join(cmd[1:], " ")
+			c <- cmd[1:]
 		}
 	}
 }
