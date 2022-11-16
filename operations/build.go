@@ -55,10 +55,10 @@ func BuildNewNs() {
 	buildRunCmd.Stderr = os.Stderr
 	buildRunCmd.Stdin = os.Stdin
 
-	// buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
-	// 	Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
-	// 	Unshareflags: syscall.CLONE_NEWNS,
-	// }
+	buildRunCmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+		Unshareflags: syscall.CLONE_NEWNS,
+	}
 
 	buildRunCmd.Run()
 }
@@ -75,8 +75,8 @@ func inContainerThread(c chan []string) {
 
 		fmt.Printf("running %v %d\n", bashCmd[0], os.Getpid())
 
-		// cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
-		cmd := exec.Command("echo", os.Getenv("PATH"))
+		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
+		// cmd := exec.Command("echo", os.Getenv("PATH"))
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
