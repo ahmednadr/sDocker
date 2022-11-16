@@ -75,7 +75,8 @@ func inContainerThread(c chan []string) {
 
 		fmt.Printf("running %v %d\n", bashCmd[0], os.Getpid())
 
-		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
+		// cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
+		cmd := exec.Command("echo", os.Getenv("PATH"))
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
