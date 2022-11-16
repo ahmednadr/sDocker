@@ -55,9 +55,9 @@ func run() {
 	fmt.Printf("running %v\n", "init")
 
 	cmd := exec.Command("/proc/self/exe", append([]string{"init"}, os.Args[2:]...)...)
-	// cmd.Stdout = os.Stdout
-	// cmd.Stdin = os.Stdin
-	// cmd.Stderr = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stdin
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
 		Unshareflags: syscall.CLONE_NEWNS,
