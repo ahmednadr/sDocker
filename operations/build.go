@@ -81,7 +81,7 @@ func inContainerThread(c chan []string) {
 		cmd.Stdin = os.Stdin
 		cmd.Stderr = os.Stderr
 
-		fmt.Print(cmd.Err)
+		fmt.Print(cmd.String())
 
 		err := cmd.Run()
 
