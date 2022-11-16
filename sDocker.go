@@ -92,7 +92,7 @@ func child() {
 func Cg() {
 	cgroups := "/sys/fs/cgroup/"
 	pids := filepath.Join(cgroups, "pids")
-	err := os.Mkdir(filepath.Join(pids, "sDocker"), 0755)
+	err := os.Mkdir(filepath.Join(pids, "sDocker"), 0777)
 
 	if err != nil && os.IsExist(err) {
 		panic(err)

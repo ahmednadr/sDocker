@@ -26,9 +26,9 @@ func GenerateUID(n int) string {
 func ExtractImage(path string, ContainerID string) {
 	_, checkErr := os.Open("./containers")
 	if checkErr != nil {
-		os.Mkdir("./containers", 0755)
+		os.Mkdir("./containers", 0777)
 	}
-	os.Mkdir("./containers/"+ContainerID, 0755)
+	os.Mkdir("./containers/"+ContainerID, 0777)
 	extract := exec.Command("tar", "-xvf", path, "-C", "./containers/"+ContainerID)
 	err := extract.Run()
 	if err != nil {
@@ -39,9 +39,9 @@ func ExtractImage(path string, ContainerID string) {
 func extractTarForBuild(baseImage string, name string) {
 	_, checkErr := os.Open("./images/tmp")
 	if checkErr != nil {
-		os.Mkdir("./images/tmp", 0755)
+		os.Mkdir("./images/tmp", 0777)
 	}
-	os.Mkdir("./images/tmp/"+name, 0755)
+	os.Mkdir("./images/tmp/"+name, 0777)
 	extract := exec.Command("tar", "-xvf", "./images/"+baseImage+".tar.gz", "-C", "./images/tmp/"+name)
 	err := extract.Run()
 	if err != nil {
