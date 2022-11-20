@@ -35,7 +35,7 @@ import (
 )
 
 // docker   run image <cmd> <params>
-// sDocker  run       <cmd> <params>
+// sDocker  run image <cmd> <params>
 func main() {
 	switch os.Args[1] {
 	case "run":
@@ -70,18 +70,18 @@ func run() {
 }
 
 func child() {
-	fmt.Printf("running %v %d\n", os.Args[2:], os.Getpid())
+	fmt.Printf("running %v %d\n", os.Args[3:], os.Getpid())
 	// syscall.SetHostname([]byte("Container"))
 
 	containerID := operations.GenerateUID(5)
-	operations.ExtractImage("./images/ubuntu.tar.gz", containerID)
+	operations.ExtractImage("./images/"+os.Args[2]+".tar.gz", containerID)
 
 	syscall.Chroot("./containers/" + containerID)
 	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
 	defer syscall.Unmount("/proc", 0)
 
-	cmd := exec.Command(os.Args[2], os.Args[3:]...)
+	cmd := exec.Command(os.Args[3], os.Args[4:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
