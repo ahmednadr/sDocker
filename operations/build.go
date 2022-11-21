@@ -73,7 +73,7 @@ func inContainerThread(c chan []string) {
 
 	for bashCmd := range c {
 
-		fmt.Printf("running %v %d\n", bashCmd[0], os.Getpid())
+		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
 		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
 		// cmd := exec.Command("echo", os.Getenv("PATH"))
@@ -109,7 +109,7 @@ func Build(buildFilePath string, newImageName string) {
 		parsedFile = append(parsedFile, args)
 	}
 
-	c := make(chan []string, 1)
+	c := make(chan []string)
 
 	for _, cmd := range parsedFile {
 		switch cmd[0] {
@@ -122,4 +122,5 @@ func Build(buildFilePath string, newImageName string) {
 			c <- cmd[1:]
 		}
 	}
+	close(c)
 }
