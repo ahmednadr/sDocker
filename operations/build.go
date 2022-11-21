@@ -26,9 +26,9 @@ func GenerateUID(n int) string {
 func ExtractImage(path string, ContainerID string) {
 	_, checkErr := os.Open("./containers")
 	if checkErr != nil {
-		os.Mkdir("./containers", 0777)
+		os.Mkdir("./containers", 0755)
 	}
-	os.Mkdir("./containers/"+ContainerID, 0777)
+	os.Mkdir("./containers/"+ContainerID, 0755)
 	extract := exec.Command("tar", "-xvf", path, "-C", "./containers/"+ContainerID)
 	err := extract.Run()
 	if err != nil {
@@ -39,9 +39,9 @@ func ExtractImage(path string, ContainerID string) {
 func extractTarForBuild(baseImage string, name string) {
 	_, checkErr := os.Open("./images/tmp")
 	if checkErr != nil {
-		os.Mkdir("./images/tmp", 0777)
+		os.Mkdir("./images/tmp", 0755)
 	}
-	os.Mkdir("./images/tmp/"+name, 0777)
+	os.Mkdir("./images/tmp/"+name, 0755)
 	extract := exec.Command("tar", "-xvf", "./images/"+baseImage+".tar.gz", "-C", "./images/tmp/"+name)
 	err := extract.Run()
 	if err != nil {
@@ -65,28 +65,16 @@ func BuildNewNs() {
 
 func inContainerThread(c chan []string) {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
-
-	err := syscall.Chroot("./images/tmp/" + os.Args[2])
-	if err != nil {
-		panic(err)
-	}
-	err = syscall.Chdir("/")
-	if err != nil {
-		panic(err)
-	}
+	syscall.Chroot("./images/tmp/" + os.Args[3])
+	syscall.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
 	defer syscall.Unmount("/proc", 0)
 
 	for bashCmd := range c {
 
-		_, erros := os.Open("/bin/echo")
-		if erros != nil {
-			panic(err)
-		}
 		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
 		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
-		// cmd := exec.Command("echo", os.Getenv("PATH"))
 
 		cmd.Stdout = os.Stdout
 		cmd.Stdin = os.Stdin
