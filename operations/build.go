@@ -66,8 +66,14 @@ func BuildNewNs() {
 func inContainerThread(c chan []string) {
 	fmt.Printf("running %v %d\n", os.Args[1:], os.Getpid())
 
-	syscall.Chroot("./images/tmp/" + os.Args[2])
-	syscall.Chdir("/")
+	err := syscall.Chroot("./images/tmp/" + os.Args[2])
+	if err != nil {
+		panic(err)
+	}
+	err = syscall.Chdir("/")
+	if err != nil {
+		panic(err)
+	}
 	syscall.Mount("proc", "proc", "proc", 0, "")
 	defer syscall.Unmount("/proc", 0)
 
