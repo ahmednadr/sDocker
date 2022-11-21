@@ -79,6 +79,10 @@ func inContainerThread(c chan []string) {
 
 	for bashCmd := range c {
 
+		_, erros := os.Open("/bin/echo")
+		if erros != nil {
+			panic(err)
+		}
 		fmt.Printf("running %v %d\n", bashCmd, os.Getpid())
 
 		cmd := exec.Command(bashCmd[0], bashCmd[1:]...)
