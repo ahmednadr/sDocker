@@ -1,14 +1,16 @@
+// Docker containers use this technology to form their own cluster of resources which would be used only by that
+// namespace, i.e. that container. so every container has its own IP address and work in isolation without facing
+// resource sharing conflicts with other containers running on the same system.
+
+
 // Let's first understand what namespaces are.
 
 // network namespaces
 // So basically, when you install Linux, by default the entire OS share the same routing table and the same IP address.
 // The namespace forms a cluster of all global system resources which can only be used by the processes
 // within the namespace, providing resource isolation.
-//
-// Docker containers use this technology to form their own cluster of resources which would be used only by that
-// namespace, i.e. that container. so every container has its own IP address and work in isolation without facing
-// resource sharing conflicts with other containers running on the same system.
-//
+
+
 // When the container is created using the -p flag, it maps the internal port 8080 to a higher external port 8080.
 // So now the port 8080 of the host is mapped to the containers port 8080 and hence they are connected.
 
